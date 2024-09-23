@@ -109,6 +109,7 @@ function supportsAc3(videoTestElement) {
  * @returns {boolean|null} _true_ if the device supports DTS (DCA). _false_ if the device doesn't support DTS (DCA). _null_ if support status is unknown.
  */
 function canPlayDts(videoTestElement) {
+    return true;
     // DTS audio is not supported by Samsung TV 2018+ (Tizen 4.0+) and LG TV 2020-2022 (webOS 5.0, 6.0 and 22) models
     if (browser.tizenVersion >= 4 || (browser.web0sVersion >= 5 && browser.web0sVersion < 23)) {
         return false;
@@ -1456,32 +1457,23 @@ export default function (options) {
     profile.SubtitleProfiles = [];
     const subtitleBurninSetting = appSettings.get('subtitleburnin');
     const subtitleRenderPgsSetting = appSettings.get('subtitlerenderpgs') === 'true';
-    if (subtitleBurninSetting !== 'all') {
-        if (supportsTextTracks()) {
-            profile.SubtitleProfiles.push({
-                Format: 'vtt',
-                Method: 'External'
-            });
-        }
-        if (options.enableSsaRender !== false && !options.isRetry && subtitleBurninSetting !== 'allcomplexformats') {
-            profile.SubtitleProfiles.push({
-                Format: 'ass',
-                Method: 'External'
-            });
-            profile.SubtitleProfiles.push({
-                Format: 'ssa',
-                Method: 'External'
-            });
-        }
 
-        if (supportsCanvas2D() && options.enablePgsRender !== false && !options.isRetry && subtitleRenderPgsSetting
-            && subtitleBurninSetting !== 'allcomplexformats' && subtitleBurninSetting !== 'onlyimageformats') {
-            profile.SubtitleProfiles.push({
-                Format: 'pgssub',
-                Method: 'External'
-            });
-        }
-    }
+    profile.SubtitleProfiles.push({
+        Format: 'vtt',
+        Method: 'External'
+    });
+    profile.SubtitleProfiles.push({
+        Format: 'ssa',
+        Method: 'External'
+    });
+    profile.SubtitleProfiles.push({
+        Format: 'ass',
+        Method: 'External'
+    });
+    profile.SubtitleProfiles.push({
+        Format: 'pgssub',
+        Method: 'External'
+    });
 
     profile.ResponseProfiles = [];
     profile.ResponseProfiles.push({
@@ -1492,3 +1484,4 @@ export default function (options) {
 
     return profile;
 }
+
